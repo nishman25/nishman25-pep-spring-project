@@ -52,4 +52,23 @@ public class MessageService {
         return messageRepository.findByPostedBy(accountId);
         
     }
+
+    public Message getMessageById(Integer messageId) {
+       Optional<Message> optionalMessage = messageRepository.findById(messageId);
+       return optionalMessage.orElse(null);
+
+    }
+
+    
+
+
 }
+
+/*
+ * As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages/{messageId}.
+
+- The response body should contain a JSON representation of the message identified by the messageId. 
+It is expected for the response body to simply be empty if there is no such message. The response status 
+should always be 200, which is the default.
+ * 
+ */

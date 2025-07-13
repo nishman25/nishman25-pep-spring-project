@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,23 +68,36 @@ public class SocialMediaController {
         return ResponseEntity.ok(userMessages);      
     }
 
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity<Message> getMessagesById(@PathVariable Integer messageId){
+        Message message = messageService.getMessageById(messageId);
+        return ResponseEntity.ok(message);
+    }
+    
 }
 
-
-
-
 /*
- *     @Test
-    public void getAllMessagesFromUserMessageExists() throws IOException, InterruptedException {
+ * public void getMessageGivenMessageIdMessageFound() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/accounts/9999/messages"))
+                .uri(URI.create("http://localhost:8080/messages/9999"))
                 .build();
         HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
         Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
-        List<Message> expectedResult = new ArrayList<Message>();
-        expectedResult.add(new Message(9999, 9999, "test message 1", 1669947792L));
-        List<Message> actualResult = objectMapper.readValue(response.body().toString(), new TypeReference<List<Message>>(){});
+        Message expectedResult = new Message(9999, 9999, "test message 1", 1669947792L);
+        Message actualResult = objectMapper.readValue(response.body().toString(), Message.class);
         Assertions.assertEquals(expectedResult, actualResult, "Expected="+expectedResult + ", Actual="+actualResult);
     }
+
+    public void getMessageGivenMessageIdMessageNotFound() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/messages/100"))
+                .build();
+        HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
+        int status = response.statusCode();
+        Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
+        Assertions.assertTrue(response.body().toString().isEmpty(), "Expected Empty Result, but Result was not Empty");
+    }
  */
+
+
