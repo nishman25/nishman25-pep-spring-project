@@ -61,13 +61,20 @@ public class SocialMediaController {
         return ResponseEntity.ok(messages);      
     }
 
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getAllMessagesByUser(@PathVariable Integer accountId){
+        List <Message> userMessages = messageService.getAllMessagesByUser(accountId);
+        return ResponseEntity.ok(userMessages);      
+    }
+
 }
 
 
 
 
 /*
-public void getAllMessagesFromUserMessageExists() throws IOException, InterruptedException {
+ *     @Test
+    public void getAllMessagesFromUserMessageExists() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/accounts/9999/messages"))
                 .build();
@@ -78,5 +85,5 @@ public void getAllMessagesFromUserMessageExists() throws IOException, Interrupte
         expectedResult.add(new Message(9999, 9999, "test message 1", 1669947792L));
         List<Message> actualResult = objectMapper.readValue(response.body().toString(), new TypeReference<List<Message>>(){});
         Assertions.assertEquals(expectedResult, actualResult, "Expected="+expectedResult + ", Actual="+actualResult);
-
+    }
  */
