@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -86,21 +87,28 @@ public class SocialMediaController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping("/register")
+    public ResponseEntity<Account> registerAccount(@RequestBody Account account) {
+        Account createdAccount = accountService.registerAccount(account);
+        if (createdAccount != null) {
+            return ResponseEntity.ok(createdAccount);
+        } else {
+            return ResponseEntity.status(409).build();
+        }
+    }
 
 }
 
 /*
- As a user, I should be able to submit a PATCH request on the endpoint PATCH 
- localhost:8080/messages/{messageId}. The request body should contain a new 
- messageText values to replace the message identified by messageId. The request body can not 
- be guaranteed to contain any other information.
+As a user, I should be able to create a new Account on the endpoint POST localhost:8080/register. 
+The body will contain a representation of a JSON Account, but will not contain an accountId.
 
-- The update of a message should be successful if and only if the message id already exists 
-and the new messageText is not blank and is not over 255 characters. If the update is successful, 
-the response body should contain the number of rows updated (1), and the response status should be 200, 
-which is the default. The message existing on the database should have the updated messageText.
-- If the update of the message is not successful for any reason, the response status should be 400. 
-(Client error)
+- The registration will be successful if and only if the username is not blank, 
+the password is at least 4 characters long, and an Account with that username does not already exist. 
+If all these conditions are met, the response body should contain a JSON of the Account, including its accountId. 
+The response status should be 200 OK, which is the default. The new account should be persisted to the database.
+- If the registration is not successful due to a duplicate username, the response status should be 409. (Conflict)
+- If the registration is not successful for some other reason, the response status should be 400. (Client error)
  */
 
 
