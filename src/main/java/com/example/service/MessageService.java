@@ -59,6 +59,21 @@ public class MessageService {
 
     }
 
+    public Integer updateMessage(Integer messageId, String messageText) {
+        if (messageText == null || messageText.trim().isEmpty() || messageText.length() > 254) {
+            return 0;
+        } 
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if (messageOptional.isPresent()){
+            Message message = messageOptional.get();
+            message.setMessageText(messageText);
+            messageRepository.save(message);
+            return 1;
+        }
+
+        return 0;
+    }
+
     
 
 

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -73,31 +74,33 @@ public class SocialMediaController {
         Message message = messageService.getMessageById(messageId);
         return ResponseEntity.ok(message);
     }
-    
+
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> updateMessageById(@PathVariable Integer messageId, @RequestBody Map<String, String> updates) {
+        String messageText = updates.get("messageText"); 
+        Integer rowsUpdated = messageService.updateMessage(messageId, messageText);
+        
+        if (rowsUpdated > 0){
+            return ResponseEntity.ok(rowsUpdated);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
 
 /*
- * public void getMessageGivenMessageIdMessageFound() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/messages/9999"))
-                .build();
-        HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
-        int status = response.statusCode();
-        Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
-        Message expectedResult = new Message(9999, 9999, "test message 1", 1669947792L);
-        Message actualResult = objectMapper.readValue(response.body().toString(), Message.class);
-        Assertions.assertEquals(expectedResult, actualResult, "Expected="+expectedResult + ", Actual="+actualResult);
-    }
+ As a user, I should be able to submit a PATCH request on the endpoint PATCH 
+ localhost:8080/messages/{messageId}. The request body should contain a new 
+ messageText values to replace the message identified by messageId. The request body can not 
+ be guaranteed to contain any other information.
 
-    public void getMessageGivenMessageIdMessageNotFound() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/messages/100"))
-                .build();
-        HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
-        int status = response.statusCode();
-        Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
-        Assertions.assertTrue(response.body().toString().isEmpty(), "Expected Empty Result, but Result was not Empty");
-    }
+- The update of a message should be successful if and only if the message id already exists 
+and the new messageText is not blank and is not over 255 characters. If the update is successful, 
+the response body should contain the number of rows updated (1), and the response status should be 200, 
+which is the default. The message existing on the database should have the updated messageText.
+- If the update of the message is not successful for any reason, the response status should be 400. 
+(Client error)
  */
 
 
