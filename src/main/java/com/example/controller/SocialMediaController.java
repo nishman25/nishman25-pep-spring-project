@@ -1,8 +1,11 @@
 package com.example.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,11 +48,17 @@ public class SocialMediaController {
     public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer messageId){
         Integer rowsDeleted = messageService.deleteMessage(messageId);
         if (rowsDeleted == 1){
-        return ResponseEntity.ok(rowsDeleted); 
+            return ResponseEntity.ok(rowsDeleted); 
         } else {
             return ResponseEntity.status(200).body(null);
         }
         
+    }
+
+    @GetMapping("/messages")
+    public ResponseEntity<List<Message>> getAllMessages(){
+        List <Message> messages = messageService.getAllMessages();
+        return ResponseEntity.ok(messages);      
     }
 
 }
@@ -58,35 +67,16 @@ public class SocialMediaController {
 
 
 /*
-
-     * Sending an http request to DELETE localhost:8080/messages/1 (message exists)
-     * 
-     * Expected Response:
-     *  Status Code: 200
-     *  Response Body: count of rows modified (should only modify a single row)
-
-    @Test
-    public void deleteMessageGivenMessageIdMessageFound() throws IOException, InterruptedException {
+public void getAllMessagesFromUserMessageExists() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/messages/9999"))
-                .DELETE()
+                .uri(URI.create("http://localhost:8080/accounts/9999/messages"))
                 .build();
         HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
         Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
-        Integer actualResult = objectMapper.readValue(response.body().toString(), Integer.class);
-        Assertions.assertTrue(actualResult.equals(1), "Expected to modify 1 row, but actually modified " + actualResult + " rows.");
-    }
- 
-        public void deleteMessageGivenMessageIdMessageNotFound() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/messages/100"))
-                .DELETE()
-                .build();
-        HttpResponse<String> response = webClient.send(request, HttpResponse.BodyHandlers.ofString());
-        int status = response.statusCode();
-        Assertions.assertEquals(200, status, "Expected Status Code 200 - Actual Code was: " + status);
-        String actualResult = response.body().toString();
-        Assertions.assertTrue(actualResult.equals(""), "Expected empty response body, but actually " + actualResult + ".");
-    }
+        List<Message> expectedResult = new ArrayList<Message>();
+        expectedResult.add(new Message(9999, 9999, "test message 1", 1669947792L));
+        List<Message> actualResult = objectMapper.readValue(response.body().toString(), new TypeReference<List<Message>>(){});
+        Assertions.assertEquals(expectedResult, actualResult, "Expected="+expectedResult + ", Actual="+actualResult);
+
  */
