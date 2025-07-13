@@ -33,5 +33,21 @@ public class AccountService {
        }
        return accountRepository.save(account);
     }
+
+    public Account login(Account account) {
+        if (account.getUsername() == null || 
+            account.getPassword() == null) {
+                return null;
+            }
+
+        Account existingAccount = accountRepository.findByUsername(account.getUsername());
+            if (existingAccount != null && existingAccount.getPassword().equals(account.getPassword())) {
+                return existingAccount;
+            }
+
+            return null;
+
+    }
+
 }
 
